@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare | Reports</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .reports-container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .reports-hero {
+            padding: 28px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #e0f2fe, #eef2ff);
+            margin-bottom: 25px;
+        }
+
+        .reports-hero h1 {
+            margin: 0 0 10px;
+            color: #1e3a8a;
+        }
+
+        .reports-hero p {
+            margin: 0;
+            color: #475569;
+        }
+
+        .report-section {
+            margin-bottom: 30px;
+        }
+
+        .report-section h2 {
+            margin-bottom: 8px;
+            color: #1e293b;
+        }
+
+        .report-period {
+            color: #64748b;
+            margin-bottom: 18px;
+        }
+
+        .report-cards {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .report-card {
+            padding: 20px;
+            border-radius: 14px;
+            background: #ffffff;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        .report-card p {
+            margin: 0 0 12px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .report-card h3 {
+            margin: 0;
+            font-size: 28px;
+            color: #0f172a;
+        }
+
+        .report-filter {
+            display: flex;
+            align-items: end;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 18px 0;
+            padding: 16px;
+            border-radius: 12px;
+            background: #f8fafc;
+        }
+
+        .report-filter label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .report-filter input {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .report-filter button {
+            padding: 11px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .report-table-wrapper {
+            overflow-x: auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        .report-table th,
+        .report-table td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .report-table th {
+            background: #f1f5f9;
+            color: #334155;
+        }
+
+        .status-taken {
+            color: #15803d;
+            font-weight: 600;
+        }
+
+        .status-missed {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .empty-report {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+
+        .report-note {
+            margin-top: 16px;
+            padding: 12px 15px;
+            border-radius: 9px;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .back-dashboard {
+            display: inline-block;
+            margin: 10px 0 30px;
+            padding: 11px 18px;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+        }
+
+        @media (max-width: 850px) {
+            .report-cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .report-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .reports-hero {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">💊 MediCare</div>
+
+        <div>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/history">Medication History</a>
+            <a href="/reports">Reports</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </nav>
+
+    <main class="reports-container">
+
+        <!-- PAGE HEADER -->
+        <section class="reports-hero">
+            <h1>📊 Medication Reports</h1>
+            <p>
+                Hello {{ name }}! View your weekly and monthly
+                medication tracking summary.
+            </p>
+        </section>
+
+        <!-- WEEKLY REPORT -->
+        <section class="report-section">
+            <h2>📅 Weekly Report</h2>
+
+            <p class="report-period">
+                Period: {{ week_start.strftime('%d %b %Y') }}
+                – {{ week_end.strftime('%d %b %Y') }}
+            </p>
+
+            <div class="report-cards">
+
+                <div class="report-card">
+                    <p>Recorded Doses</p>
+                    <h3>{{ weekly_recorded }}</h3>
+                </div>
+
+                <div class="report-card">
+                    <p>Doses Taken</p>
+                    <h3>{{ weekly_taken }}</h3>
+                </div>
+
+                <div class="report-card">
+                    <p>Doses Missed</p>
+                    <h3>{{ weekly_missed }}</h3>
+                </div>
+
+                <div class="report-card">
+                    <p>Adherence</p>
+                    <h3>{{ weekly_adherence }}%</h3>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- MONTHLY REPORT -->
+        <section class="report-section">
+            <h2>🗓️ Monthly Report</h2>
+
+            <form action="/reports" method="GET" class="report-filter">
+                <div>
+                    <label for="month">Select Month</label>
+                    <input
+                        type="month"
+                        id="month"
+                        name="month"
+                        value="{{ selected_month }}"
+                        required
+                    >
+                </div>
+
+                <button type="submit">View Report</button>
+            </form>
+
+            <p class="report-period">
+                Period: {{ month_start.strftime('%d %b %Y') }}
+                – {{ month_end.strftime('%d %b %Y') }}
+            </p>
+
+            <div class="report-cards">
+
+                <div class="report-card">
+                    <p>Recorded Doses</p>
+                    <h3>{{ monthly_recorded }}</h3>
+                </div>
+
+                <div class="report-card">
+                    <p>Doses Taken</p>
+                    <h3>{{ monthly_taken }}</h3>
+                </div>
+
+                <div class="report-card">
+                    <p>Doses Missed</p>
+                    <h3>{{ monthly_missed }}</h3>
+                </div>
+
+                <div class="report-card">
+                    <p>Adherence</p>
+                    <h3>{{ monthly_adherence }}%</h3>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- MONTHLY MEDICATION DETAILS -->
+        <section class="report-section">
+            <h2>📋 Monthly Medication Details</h2>
+
+            <div class="report-table-wrapper">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Medicine Name</th>
+                            <th>Dosage</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for log in monthly_logs %}
+                        <tr>
+                            <td>
+                                {{ log.log_date.strftime('%d %b %Y') }}
+                            </td>
+
+                            <td>{{ log.medicine_name }}</td>
+
+                            <td>{{ log.dosage }}</td>
+
+                            <td>
+                                {% if log.status == 'Taken' %}
+                                    <span class="status-taken">
+                                        ✓ Taken
+                                    </span>
+                                {% else %}
+                                    <span class="status-missed">
+                                        ✗ Missed
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="empty-report">
+                                No medication records found for this month.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="report-note">
+                Note: Reports are calculated using doses recorded as
+                Taken or Missed. Unrecorded doses are not included in
+                the adherence percentage.
+            </p>
+        </section>
+
+        <a href="/dashboard" class="back-dashboard">
+            ← Back to Dashboard
+        </a>
+
+    </main>
+
+</body>
+</html>

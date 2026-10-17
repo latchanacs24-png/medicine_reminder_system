@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Medication History | MediCare</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a class="logo" href="/dashboard">💊 MediCare</a>
+        <div>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <p class="eyebrow">MEDICATION RECORDS</p>
+            <h1>Medication History 📋</h1>
+            <p>View your recorded medicine statuses.</p>
+        </section>
+
+        <section class="card">
+            <h2>Previous Records</h2>
+
+            {% if history %}
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Medicine</th>
+                                <th>Dosage</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Recorded At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in history %}
+                            <tr>
+                                <td>{{ item.medicine_name }}</td>
+                                <td>{{ item.dosage }}</td>
+                                <td>{{ item.log_date }}</td>
+                                <td>
+                                    {% if item.status == 'Taken' %}
+                                        ✅ Taken
+                                    {% else %}
+                                        ❌ Missed
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.recorded_at }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>No medication records found yet.</p>
+                <p>Go to your dashboard and mark a medicine as Taken or Missed.</p>
+            {% endif %}
+
+            <p>
+                <a href="/dashboard">← Back to Dashboard</a>
+            </p>
+        </section>
+    </main>
+</body>
+</html>

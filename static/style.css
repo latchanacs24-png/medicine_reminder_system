@@ -1,0 +1,532 @@
+
+/* ==================================
+   MediCare - Professional CSS Design
+   ================================== */
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --background: #f3f7fc;
+    --surface: #ffffff;
+    --text: #172b4d;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --success: #16803d;
+    --danger: #dc2626;
+    --warning: #a16207;
+    --shadow: 0 8px 28px rgba(32, 58, 96, 0.07);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--background);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--primary-dark);
+}
+
+/* Navigation bar */
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 18px 6%;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 3px 12px rgba(30, 50, 80, 0.04);
+}
+
+.logo {
+    color: var(--primary);
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.navbar > div {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.navbar > div a {
+    color: #475569;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.navbar > div a:hover {
+    color: var(--primary);
+}
+
+/* Main page layout */
+
+.container {
+    width: min(1200px, 92%);
+    margin: 30px auto 60px;
+}
+
+.hero {
+    padding: 34px;
+    margin-bottom: 26px;
+    border: 1px solid #dbeafe;
+    border-radius: 20px;
+    background: linear-gradient(120deg, #eaf2ff, #f8fbff);
+}
+
+.dashboard-hero {
+    border-left: 5px solid var(--primary);
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+}
+
+.hero h1 {
+    margin: 5px 0 10px;
+    font-size: clamp(27px, 4vw, 38px);
+    line-height: 1.25;
+    color: #173568;
+}
+
+.hero p:last-child {
+    margin-bottom: 0;
+    color: #536783;
+}
+
+/* General cards and sections */
+
+.card {
+    margin-bottom: 26px;
+    padding: 28px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.card h2 {
+    margin: 0 0 22px;
+    color: #19345c;
+    font-size: 22px;
+}
+
+.card h3 {
+    color: #19345c;
+}
+
+/* Today's summary cards */
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin: 0 0 28px;
+}
+
+.summary-card {
+    position: relative;
+    overflow: hidden;
+    padding: 24px 20px;
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(32, 58, 96, 0.12);
+}
+
+.summary-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 13px;
+    border-radius: 13px;
+    background: #eaf2ff;
+    font-size: 25px;
+}
+
+.summary-card h3 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.summary-card p {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--text);
+}
+
+.total-card {
+    border-top: 4px solid #3b82f6;
+}
+
+.taken-card {
+    border-top: 4px solid #22a06b;
+}
+
+.taken-card .summary-icon {
+    background: #dcfce7;
+}
+
+.missed-card {
+    border-top: 4px solid #ef4444;
+}
+
+.missed-card .summary-icon {
+    background: #fee2e2;
+}
+
+.pending-card {
+    border-top: 4px solid #f59e0b;
+}
+
+.pending-card .summary-icon {
+    background: #fef3c7;
+}
+
+/* Form controls */
+
+form label {
+    display: block;
+    margin: 15px 0 7px;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+input,
+select,
+textarea {
+    display: block;
+    width: 100%;
+    min-height: 45px;
+    padding: 11px 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #94a3b8;
+}
+
+/* Buttons */
+
+button,
+.button {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 11px 18px;
+    border: none;
+    border-radius: 9px;
+    background: var(--primary);
+    color: white;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+button:hover,
+.button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+button:focus-visible,
+a:focus-visible {
+    outline: 3px solid #93c5fd;
+    outline-offset: 3px;
+}
+
+.status-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-form button {
+    margin: 0;
+    padding: 9px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.taken-button {
+    background: #16803d;
+}
+
+.taken-button:hover {
+    background: #166534;
+}
+
+.missed-button {
+    background: #dc2626;
+}
+
+.missed-button:hover {
+    background: #b91c1c;
+}
+
+/* Medicine table */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+    background: white;
+}
+
+thead {
+    background: #edf4ff;
+}
+
+th {
+    padding: 15px 14px;
+    color: #244574;
+    font-size: 13px;
+    font-weight: 800;
+    text-align: left;
+    white-space: nowrap;
+}
+
+td {
+    padding: 14px;
+    border-top: 1px solid #edf0f5;
+    color: #475569;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+tbody tr:hover {
+    background: #f8fbff;
+}
+
+td form {
+    margin: 0;
+}
+
+/* Medication status text */
+
+.status-taken {
+    color: var(--success);
+    font-weight: 800;
+}
+
+.status-missed {
+    color: var(--danger);
+    font-weight: 800;
+}
+
+.status-pending {
+    color: var(--warning);
+    font-weight: 800;
+}
+
+/* Success and error messages */
+
+.success-message {
+    padding: 12px 15px;
+    border: 1px solid #bbf7d0;
+    border-radius: 9px;
+    background: #f0fdf4;
+    color: #166534;
+    font-weight: 600;
+}
+
+.error-message {
+    padding: 12px 15px;
+    border: 1px solid #fecaca;
+    border-radius: 9px;
+    background: #fef2f2;
+    color: #b91c1c;
+    font-weight: 600;
+}
+
+/* Medication history link card */
+
+.history-link-card {
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid #dbeafe;
+    border-radius: 16px;
+    background: linear-gradient(120deg, #eff6ff, #ffffff);
+}
+
+.history-link-card h2 {
+    margin-top: 0;
+}
+
+.history-button {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 11px 18px;
+    border-radius: 9px;
+    background: var(--primary);
+    color: white;
+    font-weight: 700;
+    transition: background 0.2s ease;
+}
+
+.history-button:hover {
+    background: var(--primary-dark);
+    color: white;
+}
+
+/* Other pages: login and registration */
+
+.auth-container {
+    width: min(460px, 92%);
+    margin: 55px auto;
+}
+
+.auth-container .card {
+    padding: 32px;
+}
+
+.auth-container h1,
+.auth-container h2 {
+    text-align: center;
+}
+
+.auth-container button {
+    width: 100%;
+}
+
+.auth-container p {
+    color: var(--muted);
+    text-align: center;
+}
+
+/* Mobile and tablet responsive design */
+
+@media (max-width: 950px) {
+    .summary-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .container {
+        width: 94%;
+    }
+
+    .card {
+        padding: 22px;
+    }
+}
+
+@media (max-width: 560px) {
+    .navbar {
+        padding: 15px 5%;
+    }
+
+    .logo {
+        font-size: 22px;
+    }
+
+    .navbar > div {
+        gap: 14px;
+        font-size: 13px;
+    }
+
+    .container {
+        margin-top: 20px;
+    }
+
+    .hero {
+        padding: 24px 20px;
+        border-radius: 15px;
+    }
+
+    .summary-cards {
+        gap: 10px;
+    }
+
+    .summary-card {
+        padding: 17px 12px;
+        border-radius: 13px;
+    }
+
+    .summary-icon {
+        width: 39px;
+        height: 39px;
+        font-size: 21px;
+    }
+
+    .summary-card h3 {
+        font-size: 12px;
+    }
+
+    .summary-card p {
+        font-size: 28px;
+    }
+
+    .card {
+        padding: 19px 15px;
+        border-radius: 14px;
+    }
+
+    .card h2 {
+        font-size: 19px;
+    }
+
+    .status-form button {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+}

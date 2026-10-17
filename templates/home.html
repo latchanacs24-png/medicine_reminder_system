@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MediCare | Medicine Reminder</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a class="logo" href="/">💊 MediCare</a>
+        <div>
+            <a href="/login">Login</a>
+            <a class="nav-button" href="/register">Create Account</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <p class="eyebrow">YOUR PERSONAL MEDICINE COMPANION</p>
+            <h1>Take your medicines on time.</h1>
+            <p>Organize your medication schedule and keep your medicine details in one place.</p>
+            <a class="btn" href="/register">Get Started →</a>
+            <a class="secondary-btn" href="/login">I already have an account</a>
+        </section>
+
+        <section class="feature-grid">
+            <article class="card">
+                <h2>📅 Easy Scheduling</h2>
+                <p>Record medicine timings and treatment dates.</p>
+            </article>
+            <article class="card">
+                <h2>💊 Medicine List</h2>
+                <p>View the medicines saved to your account.</p>
+            </article>
+            <article class="card">
+                <h2>🔐 Personal Account</h2>
+                <p>Access your own medicine schedule after login.</p>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,400 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard | MediCare</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <nav class="navbar">
+        <a class="logo" href="/dashboard">💊 MediCare</a>
+        <div>
+            <a href="/history">Medication History</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <!-- Welcome Section -->
+        <section class="hero dashboard-hero">
+            <p class="eyebrow">YOUR PERSONAL DASHBOARD</p>
+            <h1>Hello, {{ name }}! 👋</h1>
+            <p>Manage your medicines and their schedules here.</p>
+        </section>
+
+        <!-- Notification Settings -->
+        <section class="card notification-settings">
+            <h2>🔔 Medicine Reminder Settings</h2>
+
+            <p id="notification-help">
+                Enable desktop notifications to receive medicine reminders.
+            </p>
+
+            <button type="button" id="enable-notifications">
+                🔔 Enable Desktop Notifications
+            </button>
+
+            <p id="notification-message" role="status"></p>
+
+            <div id="reminder-banner"
+                 class="reminder-banner"
+                 role="status"
+                 aria-live="polite"
+                 hidden>
+            </div>
+        </section>
+
+        <!-- Dashboard Summary -->
+        <section class="card">
+            <h2>📊 Today's Summary</h2>
+
+            <div class="summary-cards">
+                <div class="summary-card total-card">
+                    <span class="summary-icon">💊</span>
+                    <h3>Total Medicines</h3>
+                    <p>{{ total_medicines }}</p>
+                </div>
+
+                <div class="summary-card taken-card">
+                    <span class="summary-icon">✅</span>
+                    <h3>Taken Today</h3>
+                    <p>{{ taken_today }}</p>
+                </div>
+
+                <div class="summary-card missed-card">
+                    <span class="summary-icon">❌</span>
+                    <h3>Missed Today</h3>
+                    <p>{{ missed_today }}</p>
+                </div>
+
+                <div class="summary-card pending-card">
+                    <span class="summary-icon">⏳</span>
+                    <h3>Pending</h3>
+                    <p>{{ pending_today }}</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Add Medicine -->
+        <section class="card">
+            <h2>➕ Add a Medicine</h2>
+
+            <form action="/add-medicine" method="POST">
+
+                <label for="medicine_name">Medicine Name</label>
+                <input id="medicine_name"
+                       name="medicine_name"
+                       type="text"
+                       placeholder="e.g. Medicine name"
+                       required>
+
+                <label for="dosage">Dosage</label>
+                <input id="dosage"
+                       name="dosage"
+                       type="text"
+                       placeholder="e.g. 1 tablet"
+                       required>
+
+                <label for="frequency">Frequency</label>
+                <select id="frequency" name="frequency" required>
+                    <option value="">Select frequency</option>
+                    <option value="Once daily">Once daily</option>
+                    <option value="Twice daily">Twice daily</option>
+                    <option value="Three times daily">Three times daily</option>
+                    <option value="As prescribed">As prescribed</option>
+                </select>
+
+                <label for="reminder_time">Reminder Time</label>
+                <input id="reminder_time"
+                       name="reminder_time"
+                       type="time"
+                       required>
+
+                <label for="start_date">Start Date</label>
+                <input id="start_date"
+                       name="start_date"
+                       type="date"
+                       required>
+
+                <label for="end_date">End Date</label>
+                <input id="end_date"
+                       name="end_date"
+                       type="date"
+                       required>
+
+                <button type="submit">Save Medicine</button>
+            </form>
+        </section>
+
+        <!-- Medicine List -->
+        <section class="card medicine-section">
+            <h2>💊 Your Medicines</h2>
+
+            {% if request.args.get('added') == '1' %}
+                <p class="success-message">
+                    ✅ Medicine added successfully!
+                </p>
+            {% elif request.args.get('status_saved') == '1' %}
+                <p class="success-message">
+                    ✅ Medication status saved successfully!
+                </p>
+            {% elif request.args.get('error') == 'missing' %}
+                <p class="error-message">
+                    Please fill in all medicine details.
+                </p>
+            {% elif request.args.get('error') == 'dates' %}
+                <p class="error-message">
+                    End date cannot be before start date.
+                </p>
+            {% elif request.args.get('error') %}
+                <p class="error-message">
+                    Something went wrong. Please try again.
+                </p>
+            {% endif %}
+
+            {% if medicines %}
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Medicine</th>
+                                <th>Dosage</th>
+                                <th>Frequency</th>
+                                <th>Reminder</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Today's Status</th>
+                                <th>Update Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for medicine in medicines %}
+                            <tr class="medicine-row"
+                                data-medicine-id="{{ medicine.medicine_id }}"
+                                data-medicine-name="{{ medicine.medicine_name }}"
+                                data-reminder-time="{{ medicine.reminder_time }}"
+                                data-start-date="{{ medicine.start_date }}"
+                                data-end-date="{{ medicine.end_date }}"
+                                data-status="{{ medicine.today_status or 'Pending' }}">
+
+                                <td>{{ medicine.medicine_name }}</td>
+                                <td>{{ medicine.dosage }}</td>
+                                <td>{{ medicine.frequency }}</td>
+                                <td>{{ medicine.reminder_time }}</td>
+                                <td>{{ medicine.start_date }}</td>
+                                <td>{{ medicine.end_date }}</td>
+
+                                <td>
+                                    {% if medicine.today_status == 'Taken' %}
+                                        <span class="status-taken">
+                                            ✅ Taken
+                                        </span>
+                                    {% elif medicine.today_status == 'Missed' %}
+                                        <span class="status-missed">
+                                            ❌ Missed
+                                        </span>
+                                    {% else %}
+                                        <span class="status-pending">
+                                            ⏳ Pending
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <form class="status-form"
+                                          action="/mark-medication/{{ medicine.medicine_id }}"
+                                          method="POST">
+
+                                        <button type="submit"
+                                                name="status"
+                                                value="Taken"
+                                                class="taken-button">
+                                            ✅ Taken
+                                        </button>
+
+                                        <button type="submit"
+                                                name="status"
+                                                value="Missed"
+                                                class="missed-button">
+                                            ❌ Missed
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>No medicines added yet. Use the form above to add one.</p>
+            {% endif %}
+        </section>
+
+        <!-- Medication History -->
+        <section class="card history-link-card">
+            <h2>📋 Medication History</h2>
+            <p>View your previously recorded medicine statuses.</p>
+
+            <a class="history-button" href="/history">
+                View Medication History →
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Medicine Reminder Script -->
+    <script>
+    (() => {
+        const enableButton =
+            document.getElementById("enable-notifications");
+        const message =
+            document.getElementById("notification-message");
+        const banner =
+            document.getElementById("reminder-banner");
+
+        if (!enableButton || !message || !banner) return;
+
+        const rows = Array.from(
+            document.querySelectorAll(".medicine-row")
+        );
+
+        let notificationsEnabled = false;
+
+        // Track reminders already displayed during this page session.
+        const alertedReminders = new Set();
+
+        function updatePermissionMessage() {
+            if (!("Notification" in window)) {
+                message.textContent =
+                    "Your browser does not support desktop notifications.";
+                enableButton.disabled = true;
+                return;
+            }
+
+            if (Notification.permission === "granted") {
+                notificationsEnabled = true;
+                message.textContent =
+                    "✅ Desktop notifications are enabled.";
+                enableButton.textContent =
+                    "✅ Notifications Enabled";
+            } else if (Notification.permission === "denied") {
+                notificationsEnabled = false;
+                message.textContent =
+                    "Notifications are blocked. Allow them in browser site settings.";
+            } else {
+                notificationsEnabled = false;
+                message.textContent =
+                    "Click the button and allow notifications when prompted.";
+            }
+        }
+
+        enableButton.addEventListener("click", async () => {
+            if (!("Notification" in window)) {
+                updatePermissionMessage();
+                return;
+            }
+
+            try {
+                const permission =
+                    await Notification.requestPermission();
+
+                notificationsEnabled = permission === "granted";
+                updatePermissionMessage();
+            } catch (error) {
+                message.textContent =
+                    "Unable to enable notifications. Check browser settings.";
+                console.error(error);
+            }
+        });
+
+        function getLocalDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+
+            return `${year}-${month}-${day}`;
+        }
+
+        function checkReminders() {
+            const now = new Date();
+            const today = getLocalDate(now);
+
+            const currentTime =
+                String(now.getHours()).padStart(2, "0") + ":" +
+                String(now.getMinutes()).padStart(2, "0");
+
+            rows.forEach(row => {
+                const medicineId = row.dataset.medicineId;
+                const medicineName = row.dataset.medicineName;
+                const reminderTime =
+                    (row.dataset.reminderTime || "").slice(0, 5);
+                const startDate =
+                    (row.dataset.startDate || "").slice(0, 10);
+                const endDate =
+                    (row.dataset.endDate || "").slice(0, 10);
+                const status =
+                    (row.dataset.status || "Pending").trim();
+
+                if (!medicineId || !reminderTime) return;
+                if (status === "Taken" || status === "Missed") return;
+                if (startDate && today < startDate) return;
+                if (endDate && today > endDate) return;
+                if (currentTime !== reminderTime) return;
+
+                const reminderKey =
+                    `${medicineId}-${today}-${reminderTime}`;
+
+                if (alertedReminders.has(reminderKey)) return;
+                alertedReminders.add(reminderKey);
+
+                const reminderText =
+                    `Time to take ${medicineName} (${reminderTime}).`;
+
+                // Show reminder on the website.
+                banner.hidden = false;
+
+                const item = document.createElement("p");
+                item.textContent = "⏰ " + reminderText;
+                banner.appendChild(item);
+
+                // Show desktop notification if permission is granted.
+                if (notificationsEnabled &&
+                    Notification.permission === "granted") {
+                    try {
+                        const notification = new Notification(
+                            "💊 MediCare Medicine Reminder",
+                            {
+                                body: reminderText,
+                                tag: "medicare-" + reminderKey
+                            }
+                        );
+
+                        notification.onclick = () => {
+                            window.focus();
+                            notification.close();
+                        };
+                    } catch (error) {
+                        console.error(
+                            "Desktop notification error:", error
+                        );
+                    }
+                }
+            });
+        }
+
+        updatePermissionMessage();
+
+        // Check immediately, then every 15 seconds.
+        checkReminders();
+        window.setInterval(checkReminders, 15000);
+    })();
+    </script>
+</body>
+</html>
